@@ -1,9 +1,23 @@
 
-# RPI PICO  ssd1306 driver / lib with examples
+# RPI PICO ssd1306 oled lib (with examples)
+
+
+## Purpose Overview 
 
 this is hopefully a better graphics library for the common oled's ported from rpi and adafruit to rpi pico. for games gameplay and UIs. using basically the same code underneath but some higher level abstractions for convenience.
 
 ![](IMG_0089.jpg)
+
+Based on (Inspired/Copied) code from RPi Foundation Pico Examples
+lso from Adafruit Arduino SSD1306 Driver Code combined into more complete rpi pico lib. 
+
+## External documents and datasheets... 
+
+https://datasheethub.com/ssd1306-128x64-mono-0-96-inch-i2c-oled-display/ 
+
+https://datasheethub.com/wp-content/uploads/2022/08/SSD1306.pdf
+
+https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf  
 
 ## instructions
 
