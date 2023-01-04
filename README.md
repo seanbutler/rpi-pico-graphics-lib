@@ -2,6 +2,13 @@
 # RPI PICO ssd1306 oled lib (with examples)
 
 
+---
+
+OK I found this... might consider porting it as is. depends.
+https://github.com/adafruit/Adafruit-GFX-Library
+
+---
+
 ## Purpose Overview 
 
 this is hopefully a better graphics library for the common oled's ported from rpi and adafruit to rpi pico. for games gameplay and UIs. using basically the same code underneath but some higher level abstractions for convenience.
@@ -10,6 +17,8 @@ this is hopefully a better graphics library for the common oled's ported from rp
 
 Based on (Inspired/Copied) code from RPi Foundation Pico Examples
 lso from Adafruit Arduino SSD1306 Driver Code combined into more complete rpi pico lib. 
+
+
 
 ## External documents and datasheets... 
 
