@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "array": "c",
+        "*.tcc": "c",
+        "functional": "c",
+        "random": "c",
+        "streambuf": "c",
+        "pico_lib_ssd13xx.h": "c"
+    }
+}
