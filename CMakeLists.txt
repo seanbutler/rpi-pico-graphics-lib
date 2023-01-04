@@ -1,6 +1,28 @@
 
 cmake_minimum_required(VERSION 3.13)
 
+
+#
+# lets pull in the Existing Adafruit GFX Lib
+#
+
+include(FetchContent)
+
+FetchContent_Declare(
+    Adafruit_BusIO
+    GIT_REPOSITORY "https://github.com/adafruit/Adafruit_BusIO"
+)
+ 
+FetchContent_Declare(
+    Adafruit_GFX
+    GIT_REPOSITORY "https://github.com/adafruit/Adafruit-GFX-Library"
+)
+
+FetchContent_MakeAvailable(
+    Adafruit_GFX 
+    Adafruit_BusIO
+    )
+
 #
 # necessary to incorporate the RPI PICO SDK
 #
