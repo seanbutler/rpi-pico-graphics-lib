@@ -63,19 +63,17 @@ int demo_stripes()
 
 int demo_flash()
 {
-    // uint8_t buf[OLED_BUF_LEN];
     fill(buf, 0x00);
-    // render(buf, &frame_area);
     renderer.Render();
-    // oled_device.WriteData(OLED_BUF_LEN, buf);
 
     // intro sequence: flash the screen
     for (int i = 0; i < 5; i++)
     {
         oled_device.WriteCommand(0xA5);
-        sleep_ms(200);
+        sleep_ms(100);
+
         oled_device.WriteCommand(0xA4);
-        sleep_ms(200);
+        sleep_ms(100);
     }
 
     return 0;
@@ -85,7 +83,12 @@ int demo_flash()
 
 int demo_bitmap()
 {
-    render(testpattern_128x64x1, &frame_area);
+
+    for (int n=0; n< 128*64/8;n++){
+        buf[n] = ssd1306_seanglasses[n]; 
+    }
+
+    renderer.Render();
     return 0;
 }
 
@@ -95,8 +98,18 @@ int demo_animate()
 {
     for (int n = 60; n > 0; n--)
     {
-        render(testpattern_128x64x1, &frame_area);
-        render(ssd1306_seanglasses, &frame_area);
+        for (int n=0; n< 128*64/8;n++){
+            buf[n] = testpattern_128x64x1[n]; 
+        }
+
+        renderer.Render();
+
+
+        for (int n=0; n< 128*64/8;n++){
+            buf[n] = ssd1306_seanglasses[n]; 
+        }
+
+        renderer.Render();
     }
 
     return 0;

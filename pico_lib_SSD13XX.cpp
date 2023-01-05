@@ -165,6 +165,8 @@ void oled_init()
 
 void render(uint8_t *buf, struct render_area *area) {
 
+    return;
+
     // update a portion of the display with a render area
     
     oled_send_cmd(SSD1306_SET_COLUMN_ADDRESS);
