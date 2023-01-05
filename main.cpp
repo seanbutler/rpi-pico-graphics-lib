@@ -7,6 +7,7 @@
 #include "pico_lib_SSD13XX.h"
 #include "pico_lib_busio.h"
 #include "pico_lib_renderer.h"
+#include "pico_lib_graphics.h"
 
 // ------------------------------------------------------------
 
@@ -27,6 +28,7 @@ uint8_t buf[OLED_BUF_LEN];
 Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer(
         buf, 
         &oled_device);
+
 
 // ------------------------------------------------------------
 
@@ -79,6 +81,7 @@ int demo_flash()
     return 0;
 }
 
+
 // ------------------------------------------------------------
 
 int demo_bitmap()
@@ -89,6 +92,35 @@ int demo_bitmap()
     }
 
     renderer.Render();
+    return 0;
+}
+
+// ------------------------------------------------------------
+
+int demo_plot()
+{
+    Rendering::Surface_1bit surface(128, 64);
+
+    Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer2(
+        surface.buffer, 
+        &oled_device);
+
+    for (int m = 0; m < 128; m++){
+        surface.SetPixel(m, 0);
+        surface.SetPixel(0, m/2);
+    }
+
+    for (int m = 0; m < 128; m++){
+        surface.SetPixel(m, 63);
+        surface.SetPixel(127, m/2);
+    }
+
+    for (int m = 0; m < 128; m++){
+        surface.SetPixel(m, m/2);
+        surface.SetPixel(m, 64-(m/2));
+    }
+
+    renderer2.Render();
     return 0;
 }
 
@@ -136,9 +168,10 @@ int main()
     calc_render_area_buflen(&smaller_area);
 
     demo_stripes();
-    demo_flash();
-    demo_bitmap();
-    demo_animate();
+    // demo_flash();
+    // demo_bitmap();
+    demo_plot();
+    // demo_animate();
 
     return 0;
 }
