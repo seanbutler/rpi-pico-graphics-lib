@@ -2,16 +2,31 @@
 #include <string.h>
 #include <stdlib.h>
 
-// ------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------
 
 #include "pico_lib_SSD13XX.h"
+#include "pico_lib_busio.h"
+#include "pico_lib_renderer.h"
 
 // ------------------------------------------------------------
 
-// #define OLED_WIDTH        128
-// #define OLED_HEIGHT       64
-// #define OLED_PAGE_HEIGHT  8
-// #define OLED_NUM_PAGES (OLED_HEIGHT/OLED_PAGE_HEIGHT)
+//
+// this 'device' sets up the gpio and i2c to talk nicely to an ssd1306 oled
+//
+
+BusIO::Device::SSD1306_OLED oled_device(
+        400*1000,
+        PICO_DEFAULT_I2C_SDA_PIN,
+        PICO_DEFAULT_I2C_SCL_PIN,
+        GPIO_FUNC_I2C,
+        (OLED_ADDR & OLED_WRITE_MODE), 
+        0x80 );
+
+uint8_t buf[OLED_BUF_LEN];
+
+Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer(
+        buf, 
+        &oled_device);
 
 // ------------------------------------------------------------
 
@@ -24,7 +39,6 @@ struct render_area frame_area =
     end_page : OLED_NUM_PAGES - 1
 };
 
-
 struct render_area smaller_area =
 {
     start_col : 32,
@@ -33,7 +47,6 @@ struct render_area smaller_area =
     end_page : 6
 };
 
-
 int demo_stripes()
 {
     const unsigned int incre = 0x08;
@@ -41,9 +54,8 @@ int demo_stripes()
 
     for (__uint8_t pattern = 0; pattern < max - incre; pattern += incre)
     {
-        uint8_t buf[OLED_BUF_LEN];
         fill(buf, pattern);
-        render(buf, &frame_area);
+        renderer.Render();
     }
 
     return 0;
@@ -51,17 +63,19 @@ int demo_stripes()
 
 int demo_flash()
 {
-    uint8_t buf[OLED_BUF_LEN];
+    // uint8_t buf[OLED_BUF_LEN];
     fill(buf, 0x00);
-    render(buf, &frame_area);
+    // render(buf, &frame_area);
+    renderer.Render();
+    // oled_device.WriteData(OLED_BUF_LEN, buf);
 
     // intro sequence: flash the screen
     for (int i = 0; i < 5; i++)
     {
-        oled_send_cmd(0xA5); // ignore RAM, all pixels on
-        sleep_ms(100);
-        oled_send_cmd(0xA4); // go back to following RAM
-        sleep_ms(100);
+        oled_device.WriteCommand(0xA5);
+        sleep_ms(200);
+        oled_device.WriteCommand(0xA4);
+        sleep_ms(200);
     }
 
     return 0;
@@ -102,29 +116,14 @@ int main()
     bi_decl(bi_program_description("OLED I2C example for the Raspberry Pi Pico"));
 
     //
-    // setup the gpio to do i2c for the oled
-    //
-
-    oled_i2c_gpio_setup(400 * 1000,                 // baud rate
-                        PICO_DEFAULT_I2C_SDA_PIN,
-                        PICO_DEFAULT_I2C_SCL_PIN,
-                        GPIO_FUNC_I2C); 
-
-    //
-    // oled module needs some initialisation functions
-    //
-    
-    oled_init();
-
-    //
     // simple demo junk
     //
 
     calc_render_area_buflen(&frame_area);
     calc_render_area_buflen(&smaller_area);
 
-    // demo_stripes();
-    // demo_flash();
+    demo_stripes();
+    demo_flash();
     demo_bitmap();
     demo_animate();
 

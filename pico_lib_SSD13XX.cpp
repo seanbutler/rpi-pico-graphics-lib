@@ -10,7 +10,7 @@ void fill(uint8_t buf[], uint8_t fill)
     for (int i = 0; i < OLED_BUF_LEN; i++) {
         buf[i] = fill;
     }
-};
+}
 
 void fill_page(uint8_t *buf, 
                 uint8_t fill, 
@@ -18,7 +18,7 @@ void fill_page(uint8_t *buf,
 {
     // fill entire page with the same byte
     memset(buf + (page * OLED_WIDTH), fill, OLED_WIDTH);
-};
+}
 
 void calc_render_area_buflen(struct render_area *area) {
     // calculate how long the flattened buffer will be for a render area
@@ -26,7 +26,6 @@ void calc_render_area_buflen(struct render_area *area) {
 }
 
 // --------------------------------------------------
-
 
 void oled_send_cmd(uint8_t cmd) {
     // I2C write process expects a control byte followed by data
@@ -53,7 +52,7 @@ void oled_send_buf(uint8_t buf[], int buflen) {
 
     // TODO find a more memory-efficient way to do this..
     // maybe break the data transfer into pages?
-    uint8_t *temp_buf = malloc(buflen + 1);
+    uint8_t *temp_buf = (uint8_t *)malloc(buflen + 1);
 
     for (int i = 1; i < buflen + 1; i++) {
         temp_buf[i] = buf[i - 1];
@@ -78,12 +77,12 @@ void oled_send_buf(uint8_t buf[], int buflen) {
 // I2C is "open drain", pull ups to keep signal high when no data is being sent
 //
 
-
 void oled_i2c_gpio_setup(unsigned long baud_rate,
                         uint8_t sda_pin,
                         uint8_t scl_pin,
                         enum gpio_function gpio_func) 
 {
+    return;
 
     i2c_init(i2c_default, baud_rate);
     gpio_set_function(sda_pin, gpio_func);
@@ -94,8 +93,10 @@ void oled_i2c_gpio_setup(unsigned long baud_rate,
 
 // --------------------------------------------------
 
-void oled_init() {
-        
+void oled_init() 
+{
+    return;
+
     // some of these commands are not strictly necessary as the reset
     // process defaults to some of these but they are shown here
     // to demonstrate what the initialization sequence looks like

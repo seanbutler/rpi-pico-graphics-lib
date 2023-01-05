@@ -5,6 +5,15 @@
         "functional": "c",
         "random": "c",
         "streambuf": "c",
-        "pico_lib_ssd13xx.h": "c"
+        "pico_lib_ssd13xx.h": "c",
+        "algorithm": "cpp",
+        "deque": "cpp",
+        "iterator": "cpp",
+        "memory": "cpp",
+        "numeric": "cpp",
+        "list": "cpp",
+        "queue": "cpp",
+        "utility": "cpp",
+        "vector": "cpp"
     }
 }

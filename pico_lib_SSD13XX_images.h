@@ -1,8 +1,6 @@
 /*
  * Low Level Interface to SSD13XX
  * 
- * Assorted Image Data Some Ripped From Elsewhere Adafruit and RPI
- * 
  * include this file elsewhere then do something like this?
  * #define SSD1306_TESTIMAGE ssd1306_adafruitlogo
  * 

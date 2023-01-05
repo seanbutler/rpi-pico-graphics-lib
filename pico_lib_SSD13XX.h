@@ -160,6 +160,7 @@
 #define OLED_BUF_LEN                (OLED_NUM_PAGES * OLED_WIDTH)
 
 // ---------------------------------------------------------------------------
+
 #include "./pico_lib_SSD13XX_images.h"
 #define SSD1306_TESTIMAGE testpattern_128x64x1
 

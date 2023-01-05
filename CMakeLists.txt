@@ -8,25 +8,24 @@ cmake_minimum_required(VERSION 3.13)
 
 include(FetchContent)
 
-FetchContent_Declare(
-    Adafruit_BusIO
-    GIT_REPOSITORY "https://github.com/adafruit/Adafruit_BusIO"
-)
+# FetchContent_Declare(
+#     Adafruit_BusIO
+#     GIT_REPOSITORY "https://github.com/adafruit/Adafruit_BusIO"
+# )
  
-FetchContent_Declare(
-    Adafruit_GFX
-    GIT_REPOSITORY "https://github.com/adafruit/Adafruit-GFX-Library"
-)
+# FetchContent_Declare(
+#     Adafruit_GFX
+#     GIT_REPOSITORY "https://github.com/adafruit/Adafruit-GFX-Library"
+# )
 
-FetchContent_MakeAvailable(
-    Adafruit_GFX 
-    Adafruit_BusIO
-    )
+# FetchContent_MakeAvailable(
+#     Adafruit_GFX 
+#     Adafruit_BusIO
+#     )
 
 #
 # necessary to incorporate the RPI PICO SDK
 #
-
 
 # initialize pico-sdk from GIT
 # (note this can come from environment, CMake cache etc)
@@ -37,7 +36,7 @@ set(PICO_SDK_FETCH_FROM_GIT on)
 include(pico_sdk_import.cmake)
 
 
-project(my_project)
+project(pico_oled_test_project)
 
 # initialize the Raspberry Pi Pico SDK
 pico_sdk_init()
@@ -48,8 +47,8 @@ pico_sdk_init()
 #
 
 add_executable(pico_oled_test
-    pico_lib_SSD13XX.c
-    pico_oled_test.c
+    pico_lib_SSD13XX.cpp
+    main.cpp
 )
 
 # pull in common  dependencies
