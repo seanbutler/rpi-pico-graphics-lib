@@ -54,18 +54,23 @@ These libs have grown and hold some interesting usaful ideas.  They are specific
   - [x] hide bus io code 
   - [x] common interface for extension
 
+- [x] surface 
+  - [x] surface as a destination for 2D bit twiddling 
+
 - [x] renderer 
   - [x] tell device to render whats at the memory  
-  - [ ] association between surface and devices 
+  - [x] association between surface and devices 
 
-- [ ] surface as a destination for 2D bit twiddling 
-
-- [ ] GFX primitives from the adafruit library
-  - [ ] basic font code from the adafruit library
-  - [ ] line
+- [ ] graphics primitives (from the adafruit library?)
+  - [x] pixel plot and unplot 
+  - [x] line
+  - [ ] fast ortho line
   - [ ] triangle
   - [ ] rect
   - [ ] poly, circle, etc
+
+- [x] basic texture display the adafruit library
+- [ ] basic font code from the adafruit library
 
 - [ ] More GFX lib
   - [ ] sprites

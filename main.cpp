@@ -5,8 +5,8 @@
 // ------------------------------------------------------------
 
 #include "pico_lib_SSD13XX.h"
-#include "pico_lib_busio.h"
-#include "pico_lib_renderer.h"
+#include "pico_lib_busio.h"    // devices
+#include "pico_lib_renderer.h" //
 #include "pico_lib_graphics.h"
 
 // ------------------------------------------------------------
@@ -16,38 +16,37 @@
 //
 
 BusIO::Device::SSD1306_OLED oled_device(
-        400*1000,
-        PICO_DEFAULT_I2C_SDA_PIN,
-        PICO_DEFAULT_I2C_SCL_PIN,
-        GPIO_FUNC_I2C,
-        (OLED_ADDR & OLED_WRITE_MODE), 
-        0x80 );
+    400 * 1000,
+    PICO_DEFAULT_I2C_SDA_PIN,
+    PICO_DEFAULT_I2C_SCL_PIN,
+    GPIO_FUNC_I2C,
+    (OLED_ADDR & OLED_WRITE_MODE),
+    0x80);
 
 uint8_t buf[OLED_BUF_LEN];
 
 Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer(
-        buf, 
-        &oled_device);
-
+    buf,
+    &oled_device);
 
 // ------------------------------------------------------------
 
 // initialize render area for entire frame (128 pixels by N(8) pages)
 struct render_area frame_area =
-{
-    start_col : 0,
-    end_col : OLED_WIDTH - 1,
-    start_page : 0,
-    end_page : OLED_NUM_PAGES - 1
-};
+    {
+        start_col : 0,
+        end_col : OLED_WIDTH - 1,
+        start_page : 0,
+        end_page : OLED_NUM_PAGES - 1
+    };
 
 struct render_area smaller_area =
-{
-    start_col : 32,
-    end_col : 96,
-    start_page : 2,
-    end_page : 6
-};
+    {
+        start_col : 32,
+        end_col : 96,
+        start_page : 2,
+        end_page : 6
+    };
 
 int demo_stripes()
 {
@@ -81,14 +80,13 @@ int demo_flash()
     return 0;
 }
 
-
 // ------------------------------------------------------------
 
 int demo_bitmap()
 {
-
-    for (int n=0; n< 128*64/8;n++){
-        buf[n] = ssd1306_seanglasses[n]; 
+    for (int n = 0; n < 128 * 64 / 8; n++)
+    {
+        buf[n] = ssd1306_seanglasses[n];
     }
 
     renderer.Render();
@@ -102,25 +100,22 @@ int demo_plot()
     Rendering::Surface_1bit surface(128, 64);
 
     Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer2(
-        surface.buffer, 
+        surface.buffer,
         &oled_device);
 
-    for (int m = 0; m < 128; m++){
-        surface.SetPixel(m, 0);
-        surface.SetPixel(0, m/2);
-    }
+    surface.DrawLine(0, 0, 127, 0);    // right
+    surface.DrawLine(127, 0, 127, 63); // down
+    surface.DrawLine(127, 63, 0, 63);  // left
+    surface.DrawLine(0, 63, 0, 0);     // up
 
-    for (int m = 0; m < 128; m++){
-        surface.SetPixel(m, 63);
-        surface.SetPixel(127, m/2);
-    }
+    surface.DrawLine(63, 0, 127, 32); // right down
+    surface.DrawLine(127, 32, 63, 63); // left down
 
-    for (int m = 0; m < 128; m++){
-        surface.SetPixel(m, m/2);
-        surface.SetPixel(m, 64-(m/2));
-    }
+    surface.DrawLine(63, 63, 0, 32); // left up
+    surface.DrawLine( 0, 32, 63, 0); // right up
 
     renderer2.Render();
+
     return 0;
 }
 
@@ -130,15 +125,16 @@ int demo_animate()
 {
     for (int n = 60; n > 0; n--)
     {
-        for (int n=0; n< 128*64/8;n++){
-            buf[n] = testpattern_128x64x1[n]; 
+        for (int n = 0; n < 128 * 64 / 8; n++)
+        {
+            buf[n] = testpattern_128x64x1[n];
         }
 
         renderer.Render();
 
-
-        for (int n=0; n< 128*64/8;n++){
-            buf[n] = ssd1306_seanglasses[n]; 
+        for (int n = 0; n < 128 * 64 / 8; n++)
+        {
+            buf[n] = ssd1306_seanglasses[n];
         }
 
         renderer.Render();
@@ -168,7 +164,7 @@ int main()
     calc_render_area_buflen(&smaller_area);
 
     demo_stripes();
-    // demo_flash();
+    demo_flash();
     // demo_bitmap();
     demo_plot();
     // demo_animate();

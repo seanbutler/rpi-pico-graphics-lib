@@ -28,6 +28,7 @@ void calc_render_area_buflen(struct render_area *area) {
 // --------------------------------------------------
 
 void oled_send_cmd(uint8_t cmd) {
+    return;
     // I2C write process expects a control byte followed by data
     // this "data" can be a command or data to follow up a command
 
@@ -43,6 +44,8 @@ void oled_send_cmd(uint8_t cmd) {
 // --------------------------------------------------
 
 void oled_send_buf(uint8_t buf[], int buflen) {
+    return;
+
     // in horizontal addressing mode, the column address pointer auto-increments
     // and then wraps around to the next page, so we can send the entire frame
     // buffer in one gooooooo!
