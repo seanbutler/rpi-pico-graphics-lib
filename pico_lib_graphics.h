@@ -86,6 +86,33 @@ namespace Rendering
             *addr &= ~(1 << (y & 7));
         }
 
+        void DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
+        {
+            // TODO put in code here to handle special fast cases
+            _DrawLine(x0, y0, x1, y1);
+        }
+
+        void DrawRect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
+        {
+            // TODO put in code here to handle special fast cases
+            _DrawLine(x0, y0, x1, y0);
+            _DrawLine(x1, y0, x1, y1);
+            _DrawLine(x1, y1, x0, y1);
+            _DrawLine(x0, y1, x0, y0);
+        }
+
+        void DrawTriangle(uint8_t x0, uint8_t y0, 
+                            uint8_t x1, uint8_t y1,
+                            uint8_t x2, uint8_t y2)
+        {
+            // TODO put in code here to handle special fast cases
+            _DrawLine(x0, y0, x1, y1);
+            _DrawLine(x1, y1, x2, y2);
+            _DrawLine(x2, y2, x0, y0);
+        }
+
+    protected:
+
         // Bresenhams from here
         // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 
@@ -148,13 +175,6 @@ namespace Rendering
             }
         }
 
-        void DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
-        {
-            // TODO put in code here to handle special fast cases
-            _DrawLine(x0, y0, x1, y1);
-        }
-
-    protected:
         inline uint8_t *GetByte(uint8_t x, uint8_t y)
         {
             return &buffer[x + ((y / 8) * w_)];

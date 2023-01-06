@@ -48,19 +48,6 @@ struct render_area smaller_area =
         end_page : 6
     };
 
-int demo_stripes()
-{
-    const unsigned int incre = 0x08;
-    const unsigned int max = 0xFE;
-
-    for (__uint8_t pattern = 0; pattern < max - incre; pattern += incre)
-    {
-        fill(buf, pattern);
-        renderer.Render();
-    }
-
-    return 0;
-}
 
 int demo_flash()
 {
@@ -86,7 +73,7 @@ int demo_bitmap()
 {
     for (int n = 0; n < 128 * 64 / 8; n++)
     {
-        buf[n] = ssd1306_seanglasses[n];
+        buf[n] = charmap_cellphone_white[n];
     }
 
     renderer.Render();
@@ -103,16 +90,23 @@ int demo_plot()
         surface.buffer,
         &oled_device);
 
-    surface.DrawLine(0, 0, 127, 0);    // right
-    surface.DrawLine(127, 0, 127, 63); // down
-    surface.DrawLine(127, 63, 0, 63);  // left
-    surface.DrawLine(0, 63, 0, 0);     // up
-
-    surface.DrawLine(63, 0, 127, 32); // right down
+    surface.DrawLine(63, 0, 127, 32);  // right down
     surface.DrawLine(127, 32, 63, 63); // left down
 
     surface.DrawLine(63, 63, 0, 32); // left up
-    surface.DrawLine( 0, 32, 63, 0); // right up
+    surface.DrawLine(0, 32, 63, 0);  // right up
+
+    for (int n = 0; n < 3; n++)
+    {
+        surface.DrawRect(0 + n * 8, 0 + n * 8, 127 - n * 8, 63 - +n * 8);
+    }
+
+    for (int n = 32; n <= 96; n += 32)
+    {
+        surface.DrawTriangle(n, 24,
+                             n + 8, 40,
+                             n - 8, 40);
+    }
 
     renderer2.Render();
 
@@ -163,10 +157,9 @@ int main()
     calc_render_area_buflen(&frame_area);
     calc_render_area_buflen(&smaller_area);
 
-    demo_stripes();
     demo_flash();
-    // demo_bitmap();
     demo_plot();
+    demo_bitmap();
     // demo_animate();
 
     return 0;

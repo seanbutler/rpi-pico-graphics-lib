@@ -9,8 +9,7 @@ This code handles 128x62x1 screens more nicely. Could do with some parameterisat
 This is hopefully a better graphics library for the common oled's with ideas stolen from from rpi-sdk and adafruit-gfx. for games gameplay and UIs. using basically the others code underneath but some higher level abstractions for my convenience.
 
 ![](IMG_0089.jpg)
- 
- 
+
 ## External documents and datasheets... 
 
 https://datasheethub.com/ssd1306-128x64-mono-0-96-inch-i2c-oled-display/ 
@@ -61,32 +60,36 @@ These libs have grown and hold some interesting usaful ideas.  They are specific
   - [x] tell device to render whats at the memory  
   - [x] association between surface and devices 
 
-- [ ] graphics primitives (from the adafruit library?)
+- [x] graphics primitives (from the adafruit library?)
   - [x] pixel plot and unplot 
   - [x] line
-  - [ ] fast ortho line
-  - [ ] triangle
-  - [ ] rect
-  - [ ] poly, circle, etc
+  - [x] line triangle
+  - [ ] fill triangle
+  - [x] line rect
+  - [ ] fill rect
 
-- [x] basic texture display the adafruit library
-- [ ] basic font code from the adafruit library
+- [x] basic texture display
 
-- [ ] More GFX lib
+- [ ] 2d image masking & compositing like cairo graphics
+  - [ ] write/copy from one surface to another 
+  - [ ] multiple draw surfaces
+  - [ ] other logical operation (AND OR XOR NOT etc) from one surface to another
+  - [ ] scaling between surfaces with logical operations
+
+- [ ] Fast Game Sprites
+  - [ ] Import texture data in rendering order?
   - [ ] sprites
   - [ ] animations
 
 - [ ] 2d game graphics
-  - [ ] sprites
+  - [ ] sprites (see quad texture copy above)
   - [ ] animations
+  - [ ] grid 9 images for frames etc
 
-- [ ] 2d image masking & compositing like cairo graphics
-  - [ ] multiple draw surfaces
-  - [ ] write/copy from one surface to another 
-  - [ ] other logical operation (AND OR XOR NOT etc) from one surface to another
-  - [ ] scaling between surfaces when operations
-
-- [ ] grid 9 images for frames etc
+- [ ] more graphics primitives (from the adafruit library?)
+  - [ ] fast ortho lines
+  - [ ] line poly, circle, etc
+  - [ ] fill poly, circle, etc
 
 - [ ] raycasting engine
 - [ ] proper 3d engine
