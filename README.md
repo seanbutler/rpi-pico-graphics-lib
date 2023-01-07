@@ -18,7 +18,6 @@ https://datasheethub.com/wp-content/uploads/2022/08/SSD1306.pdf
 
 https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf  
 
-
 ## Adafruit and Arduino
 
 Lots of excellent work here: Abstracting away the various IO methods available on the Arduino. Providing a basic but usable generic graphics library. 
@@ -50,11 +49,11 @@ These libs have grown and hold some interesting usaful ideas.  They are specific
 **architectural separation, devices, interface, renderers and graphics**
 
 - [x] encapsulation of target device 
-  - [x] hide bus io code 
+  - [x] hide bus io device code 
   - [x] common interface for extension
 
 - [x] surface 
-  - [x] surface as a destination for 2D bit twiddling 
+  - [x] surface as a destination for 2D ops & bit twiddling 
 
 - [x] renderer 
   - [x] tell device to render whats at the memory  
@@ -63,10 +62,12 @@ These libs have grown and hold some interesting usaful ideas.  They are specific
 - [x] graphics primitives (from the adafruit library?)
   - [x] pixel plot and unplot 
   - [x] line
-  - [x] line triangle
-  - [ ] fill triangle
   - [x] line rect
+  - [x] line triangle
+  - [ ] line poly/circle
+  - [ ] fill triangle
   - [ ] fill rect
+  - [ ] fill poly/circle
 
 - [x] basic texture display
 

@@ -111,6 +111,38 @@ namespace Rendering
             _DrawLine(x2, y2, x0, y0);
         }
 
+        // uint8_t x_;
+        // uint8_t y_;
+        // uint8_t glyph_size_x_ = 5+2;
+        // uint8_t glyph_size_y_ = 7+2;
+        // uint8_t charmap_size_x_ = 128;
+        // uint8_t charmap_size_y_ = 64;
+        // uint8_t glyphs_per_row_ = charmap_size_x_/ glyph_size_x_;
+
+
+        // void PrintAt( uint8_t x, uint8_t y) {
+        //     x_ = x;
+        //     y_ = y;
+        // }
+
+        // void PrintLetter(char c)
+        // {
+        //     if ( c   == '\n' )
+        //     {
+        //     }
+
+        //     if ( c >= ' ' && c <= '~' )
+        //     {
+        //         c = c - 32;
+
+        //         if ( c < 19 )
+        //         {
+                    
+        //         }                
+
+        //     }
+        // }
+
     protected:
 
         // Bresenhams from here
@@ -183,11 +215,9 @@ namespace Rendering
 
     class Surface_8bit : public Surface
     {
-        // NOTE this is specifically a 8bit surface
+        // NOTE this is specifically a 8bit surface, one byte per pixel
 
     public:
-        uint16_t size_;
-
         Surface_8bit(uint8_t w, uint8_t h)
             : Surface(w, h)
         {

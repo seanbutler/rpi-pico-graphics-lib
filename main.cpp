@@ -73,7 +73,8 @@ int demo_bitmap()
 {
     for (int n = 0; n < 128 * 64 / 8; n++)
     {
-        buf[n] = charmap_cellphone_white[n];
+        // buf[n] = charmap_cellphone_white[n];
+        buf[n] = charmap_futuristic_black[n];
     }
 
     renderer.Render();
@@ -128,7 +129,7 @@ int demo_animate()
 
         for (int n = 0; n < 128 * 64 / 8; n++)
         {
-            buf[n] = ssd1306_seanglasses[n];
+            buf[n] = seanglasses_128x64x1[n];
         }
 
         renderer.Render();
