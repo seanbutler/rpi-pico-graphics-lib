@@ -38,6 +38,8 @@
 
 // ---------------------------------------------------------------------------
 
+// TODO move this into a SSD1306 device specific src file
+
 //
 // FUNDAMENTAL COMMANDS 
 //
@@ -52,6 +54,8 @@
 
 #define SSD1306_SET_DISPLAY_OFF         _u(0xAE)
 #define SSD1306_SET_DISPLAY_ON          _u(0xAF)
+
+
 
 //
 // SCROLLING COMMANDS 
@@ -124,6 +128,8 @@
 #define SSD1306_NOP                           _u(0xE3)
 
 // ---------------------------------------------------------------------------
+
+
 
 //
 // CHARGE PUMP COMMANDS

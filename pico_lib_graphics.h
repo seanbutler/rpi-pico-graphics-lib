@@ -39,6 +39,7 @@ namespace Rendering
 
         virtual void SetPixel(uint8_t x, uint8_t y) = 0;
         virtual void ClearPixel(uint8_t x, uint8_t y) = 0;
+        virtual bool GetPixel(uint8_t x, uint8_t y) = 0;
 
         inline bool OutOfBounds(uint8_t x, uint8_t y)
         {
@@ -77,6 +78,11 @@ namespace Rendering
             *addr |= 1 << (y & 7);
         }
 
+        virtual bool GetPixel(uint8_t x, uint8_t y) {
+            uint8_t *addr = GetByte(x, y);
+            return 0x01 & ( *addr >> (y & 7) );
+        }
+
         void ClearPixel(uint8_t x, uint8_t y)
         {
             if (OutOfBounds(x, y))
@@ -105,48 +111,35 @@ namespace Rendering
                             uint8_t x1, uint8_t y1,
                             uint8_t x2, uint8_t y2)
         {
-            // TODO put in code here to handle special fast cases
             _DrawLine(x0, y0, x1, y1);
             _DrawLine(x1, y1, x2, y2);
             _DrawLine(x2, y2, x0, y0);
         }
 
-        // uint8_t x_;
-        // uint8_t y_;
-        // uint8_t glyph_size_x_ = 5+2;
-        // uint8_t glyph_size_y_ = 7+2;
-        // uint8_t charmap_size_x_ = 128;
-        // uint8_t charmap_size_y_ = 64;
-        // uint8_t glyphs_per_row_ = charmap_size_x_/ glyph_size_x_;
 
 
-        // void PrintAt( uint8_t x, uint8_t y) {
-        //     x_ = x;
-        //     y_ = y;
-        // }
+        void DrawBitmap(Surface * src,
+                        Surface * dest,
+                        uint8_t dest_x, uint8_t dest_y )
+        {
+            // TODO optimise this
+            for ( uint8_t current_src_y = 0; current_src_y < src->h_; current_src_y++ ) {
+                for ( uint8_t current_src_x = 0; current_src_x < src->w_; current_src_x++ ) {
 
-        // void PrintLetter(char c)
-        // {
-        //     if ( c   == '\n' )
-        //     {
-        //     }
+                    uint8_t current_dest_x = dest_x + current_src_x;
+                    uint8_t current_dest_y = dest_y + current_src_y;
 
-        //     if ( c >= ' ' && c <= '~' )
-        //     {
-        //         c = c - 32;
+                    if ( src->GetPixel(current_src_x, current_src_y) ) {
+                        dest->SetPixel(current_dest_x, current_dest_y);
+                    }
 
-        //         if ( c < 19 )
-        //         {
-                    
-        //         }                
-
-        //     }
-        // }
+                }
+            }
+        }
 
     protected:
 
-        // Bresenhams from here
-        // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+        // Bresenhams from here https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 
 #define _swap_int8_t(x0, y0) \
     {                        \
@@ -208,52 +201,12 @@ namespace Rendering
         }
 
         inline uint8_t *GetByte(uint8_t x, uint8_t y)
-        {
-            return &buffer[x + ((y / 8) * w_)];
+        {   
+            const uint8_t pixels_per_byte = 8;
+            return &buffer[x + ((y / pixels_per_byte) * w_)];
         }
     };
 
-    class Surface_8bit : public Surface
-    {
-        // NOTE this is specifically a 8bit surface, one byte per pixel
-
-    public:
-        Surface_8bit(uint8_t w, uint8_t h)
-            : Surface(w, h)
-        {
-            // NOTE width and height must be multiples of 8
-            size_ = (w_ * h_);
-            buffer = (uint8_t *)malloc(size_);
-            for (uint16_t n = 0; n < size_; n++)
-            {
-                buffer[n] = 0x00;
-            }
-        }
-
-        void SetPixel(uint8_t x, uint8_t y, uint8_t colour = 0xFF)
-        {
-            if (OutOfBounds(x, y))
-                assert("Coords Out of Bounds of Buffer");
-
-            uint8_t *addr = GetByte(x, y);
-            *addr = colour;
-        }
-
-        void ClearPixel(uint8_t x, uint8_t y, uint8_t colour = 0x00)
-        {
-            if (OutOfBounds(x, y))
-                assert("Coords Out of Bounds of Buffer");
-
-            uint8_t *addr = GetByte(x, y);
-            *addr = colour;
-        }
-
-    protected:
-        inline uint8_t *GetByte(uint8_t x, uint8_t y)
-        {
-            return &buffer[x + (y * w_)];
-        }
-    };
 }
 
 // ----------------------------------------------------------------------

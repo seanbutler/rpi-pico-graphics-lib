@@ -72,15 +72,19 @@ These libs have grown and hold some interesting usaful ideas.  They are specific
 - [x] basic texture display
 
 - [ ] 2d image masking & compositing like cairo graphics
-  - [ ] write/copy from one surface to another 
+  - [x] write/copy from one surface to another 
   - [ ] multiple draw surfaces
   - [ ] other logical operation (AND OR XOR NOT etc) from one surface to another
   - [ ] scaling between surfaces with logical operations
 
-- [ ] Fast Game Sprites
-  - [ ] Import texture data in rendering order?
-  - [ ] sprites
+- [ ] Sprites
+  - [x] sprites
   - [ ] animations
+  - [ ] sprite sheet
+
+- [ ] Constrained Optimised Sprites
+  - [ ] byte aligned data reads in 1bit surface
+  - [ ] linear reads, skipping writes
 
 - [ ] 2d game graphics
   - [ ] sprites (see quad texture copy above)

@@ -8,6 +8,8 @@
 #include "pico_lib_busio.h"    // devices
 #include "pico_lib_renderer.h" //
 #include "pico_lib_graphics.h"
+#include "pico_lib_testimages.h"
+
 
 // ------------------------------------------------------------
 
@@ -81,13 +83,14 @@ int demo_bitmap()
     return 0;
 }
 
+
 // ------------------------------------------------------------
 
 int demo_plot()
 {
     Rendering::Surface_1bit surface(128, 64);
 
-    Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer2(
+    Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer(
         surface.buffer,
         &oled_device);
 
@@ -109,7 +112,8 @@ int demo_plot()
                              n - 8, 40);
     }
 
-    renderer2.Render();
+    renderer.Render();
+    sleep_ms(200);
 
     return 0;
 }
@@ -129,7 +133,7 @@ int demo_animate()
 
         for (int n = 0; n < 128 * 64 / 8; n++)
         {
-            buf[n] = seanglasses_128x64x1[n];
+            buf[n] = testimage_128x64x1[n];
         }
 
         renderer.Render();
@@ -137,6 +141,42 @@ int demo_animate()
 
     return 0;
 }
+
+// ------------------------------------------------------------
+
+
+// 'man', 16x16px
+const unsigned char man_sprite [32] = {
+	0x00, 0x00, 0x00, 0x80, 0xc0, 0xe6, 0x6f, 0xff, 0xfd, 0xef, 0x62, 0xc0, 0x00, 0x00, 0x00, 0x00, 
+	0x00, 0x00, 0x00, 0xc3, 0xe3, 0x70, 0x3f, 0x1f, 0x0f, 0xff, 0xf8, 0x83, 0x07, 0x00, 0x00, 0x00
+};
+
+int demo_sprite()
+{
+    Rendering::Surface_1bit surface(128, 64);
+    Rendering::Surface_1bit sprite(16, 16);
+
+    memcpy(sprite.buffer, man_sprite, 32);
+
+    for (int n=0;n<4;n++)
+    {
+        surface.DrawBitmap(&sprite, &surface, (n*16+n)+0, 0);
+        surface.DrawBitmap(&sprite, &surface, (n*16+n)+16, 16);
+        surface.DrawBitmap(&sprite, &surface, (n*16+n)+32, 32);
+        surface.DrawBitmap(&sprite, &surface, (n*16+n)+48, 48);
+    }
+
+    Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer(
+        surface.buffer,
+        &oled_device);
+
+    renderer.Render();
+    sleep_ms(200);
+
+    return 0;
+}
+
+
 
 // ------------------------------------------------------------
 
@@ -155,13 +195,19 @@ int main()
     // simple demo junk
     //
 
-    calc_render_area_buflen(&frame_area);
-    calc_render_area_buflen(&smaller_area);
+    // calc_render_area_buflen(&frame_area);
+    // calc_render_area_buflen(&smaller_area);
 
-    demo_flash();
+    // demo_flash();
+
     demo_plot();
-    demo_bitmap();
+
     // demo_animate();
+
+    // demo_bitmap();
+
+    demo_sprite();
+
 
     return 0;
 }

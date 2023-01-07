@@ -14,9 +14,13 @@
 
 // ----------------------------------------------------------------------
 
+
+// ----------------------------------------------------------------------
+
 namespace BusIO
 {
-    class Interface {
+    class Interface
+    {
         // TODO put a generic interface to one or more devices here
     };
 
@@ -26,9 +30,9 @@ namespace BusIO
         {
         public:
             virtual void Initialise() = 0;
-            virtual void WriteCommand(uint8_t cmd) =0;
-            virtual void WriteData(uint16_t len, uint8_t *data) =0;
-            virtual int8_t* ReadeData(uint16_t len) =0;
+            virtual void WriteCommand(uint8_t cmd) = 0;
+            virtual void WriteData(uint16_t len, uint8_t *data) = 0;
+            virtual int8_t *ReadData(uint16_t len) = 0;
         };
 
         class SSD1306_OLED : public Generic
@@ -38,7 +42,6 @@ namespace BusIO
             uint8_t sda_pin_;
             uint8_t scl_pin_;
             enum gpio_function gpio_func_;
-            uint8_t cmd_pfix_;    // ssd1306 oled needs 0x80
             uint8_t write_flags_; // ssd1306 oled needs (OLED_ADDR & OLED_WRITE_MODE)
 
             SSD1306_OLED(unsigned long baud_rate,
@@ -46,10 +49,9 @@ namespace BusIO
                          uint8_t scl_pin,
                          enum gpio_function gpio_func,
                          uint8_t write_flags,
-                         uint8_t cmd_pfix)
+                         uint8_t cmd_pfix = 0x40)
                 : baud_rate_(baud_rate), sda_pin_(sda_pin), scl_pin_(scl_pin), gpio_func_(gpio_func), write_flags_(write_flags), cmd_pfix_(cmd_pfix)
             {
-                cmd_buf_[0] = cmd_pfix_;
 
                 //
                 // Device Specific Initialisation Code Here
@@ -82,17 +84,13 @@ namespace BusIO
                 WriteCommand(SSD1306_MEMORY_ADDRESSING_MODE_HORIZONTAL); // horizontal addressing mode
 
                 /* resolution and layout */
-                WriteCommand(SSD1306_SET_DISPLAY_START_LINE); // set display start line to 0
-
-                WriteCommand(SSD1306_SET_SEGMENT_REMAP_127); // set segment re-map column address 127 is mapped to SEG0
-
-                WriteCommand(SSD1306_SET_MULTIPLEX_RATIO); // set multiplex ratio
-                WriteCommand(OLED_HEIGHT - 1);             // display height - 1
-
+                WriteCommand(SSD1306_SET_DISPLAY_START_LINE);       // set display start line to 0
+                WriteCommand(SSD1306_SET_SEGMENT_REMAP_127);        // set segment re-map column address 127 is mapped to SEG0
+                WriteCommand(SSD1306_SET_MULTIPLEX_RATIO);          // set multiplex ratio
+                WriteCommand(OLED_HEIGHT - 1);                      // display height - 1
                 WriteCommand(SSD1306_SET_COM_OUTPUT_SCAN_DIR_LEFT); // set COM (common) output scan direction
-
-                WriteCommand(SSD1306_SET_DISPLAY_OFFSET); // set display offset
-                WriteCommand(0x00);                       // no offset
+                WriteCommand(SSD1306_SET_DISPLAY_OFFSET);           // set display offset
+                WriteCommand(0x00);                                 // no offset
 
                 WriteCommand(SSD1306_SET_COM_PIN_HARDWARE_CONFIG); // set COM (common) pins hardware configuration
 
@@ -107,24 +105,19 @@ namespace BusIO
 
                 /* timing and driving scheme */
                 WriteCommand(SSD1306_SET_DISPLAY_CLOCK_DIVIDE); // set display clock divide ratio
-                WriteCommand(0x80);                                          // div ratio of 1, standard freq
-
-                WriteCommand(SSD1306_SET_PRECHARGE_PERIOD); // set pre-charge period
-                WriteCommand(0xF1);                         // Vcc internally generated on our board
-
-                WriteCommand(SSD1306_SET_VCOM_DESELECT_LEVEL); // set VCOMH deselect level
-                WriteCommand(SSD1306_VCOM_DESELECT_083_TIMES); // 0.83xVcc
+                WriteCommand(0x80);                             // div ratio of 1, standard freq
+                WriteCommand(SSD1306_SET_PRECHARGE_PERIOD);     // set pre-charge period
+                WriteCommand(0xF1);                             // Vcc internally generated on our board
+                WriteCommand(SSD1306_SET_VCOM_DESELECT_LEVEL);  // set VCOMH deselect level
+                WriteCommand(SSD1306_VCOM_DESELECT_083_TIMES);  // 0.83xVcc
 
                 /* display */
-                WriteCommand(SSD1306_SET_CONTRAST_CONTROL); // set contrast control
+                WriteCommand(SSD1306_SET_CONTRAST_CONTROL);     // set contrast control
                 WriteCommand(0xFF);
-
-                WriteCommand(SSD1306_SET_ENTIRE_DISPLAY_RAM); // set entire display on to follow RAM content
-
-                WriteCommand(SSD1306_SET_NORMAL_DISPLAY); // set normal (not inverse, B=W & W=B) display
-
-                WriteCommand(SSD1306_SET_CHARGE_PUMP); // set charge pump
-                WriteCommand(0x14);                    // Vcc internally generated on our board
+                WriteCommand(SSD1306_SET_ENTIRE_DISPLAY_RAM);   // set entire display on to follow RAM content
+                WriteCommand(SSD1306_SET_NORMAL_DISPLAY);       // set normal (not inverse, B=W & W=B) display
+                WriteCommand(SSD1306_SET_CHARGE_PUMP);          // set charge pump
+                WriteCommand(0x14);                             // Vcc internally generated on our board
 
                 /* scrolling safety */
                 WriteCommand(SSD1306_SET_CONTINUOUS_SCROLL_DEACTIVATE); // deactivate horizontal scrolling if set
@@ -165,12 +158,14 @@ namespace BusIO
                 free(temp_buf_);
             }
 
-            int8_t* ReadeData(uint16_t len) {
+            int8_t *ReadData(uint16_t len)
+            {
                 static_assert("Write Only Device");
                 return 0;
             };
 
         private:
+            uint8_t cmd_pfix_;
             uint8_t cmd_buf_[2];
             uint8_t *temp_buf_;
         };
