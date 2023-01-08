@@ -16,7 +16,15 @@ This code handles 128x62x1 screens more nicely. Could do with some parameterisat
 This is hopefully a better graphics library for the common oled's with ideas stolen from from rpi-sdk and adafruit-gfx. for games gameplay and UIs. using basically the others code underneath but some higher level abstractions for my convenience.
 
 
-## Design/Use/Architecture
+
+## Setup Instructions
+
+1. plug your oled into pins 6 and 7 on your rpi (pins are configurable)
+2. compile the example using the cmake file provided
+3. drag it over to the usb device
+
+
+## Code Design Use/Architecture
 
 1. Create a Device
 
@@ -56,6 +64,16 @@ This is hopefully a better graphics library for the common oled's with ideas sto
 ~~~
 
 
+Or take a look at 'main.cpp' in the project for an example
+
+## Action Shots
+
+
+![Line and Shape Drawing Primitives](IMG_0105.jpg)
+
+![Lots of Spries All the Same](IMG_0106.jpg)
+
+
 ## External documents and datasheets... 
 
 https://datasheethub.com/ssd1306-128x64-mono-0-96-inch-i2c-oled-display/ 
@@ -78,11 +96,6 @@ Nice big family of graphics methods here...
 
 __Possibly I should just fork the Adafruit libraries to make ports for RPI PICO? Would learn more by reading them and re-writing where necessary though.__
 
-## instructions
-
-1. plug your oled into pins 6 and 7 on your rpi (pins are configurable)
-2. compile the example using the cmake file provided
-3. drag it over to the usb device
 
 ## roadmap
 
