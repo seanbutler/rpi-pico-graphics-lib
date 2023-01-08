@@ -69,6 +69,14 @@ namespace Rendering
             }
         }
 
+
+        void Fill(uint8_t fill) 
+        {
+            for (int i = 0; i < size_; i++) {
+                buffer[i] = fill;
+            }
+        }
+
         void SetPixel(uint8_t x, uint8_t y)
         {
             if (OutOfBounds(x, y))

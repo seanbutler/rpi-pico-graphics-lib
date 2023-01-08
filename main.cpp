@@ -5,8 +5,8 @@
 // ------------------------------------------------------------
 
 #include "pico_lib_SSD13XX.h"
-#include "pico_lib_busio.h"    // devices
-#include "pico_lib_renderer.h" //
+#include "pico_lib_busio.h"    
+#include "pico_lib_renderer.h" 
 #include "pico_lib_graphics.h"
 #include "pico_lib_testimages.h"
 
@@ -14,10 +14,10 @@
 // ------------------------------------------------------------
 
 //
-// this 'device' sets up the gpio and i2c to talk nicely to an ssd1306 oled
+// this DEVICE sets up the gpio and i2c to talk nicely to an ssd1306 oled
 //
 
-BusIO::Device::SSD1306_OLED oled_device(
+BusIO::Device::SSD1306_OLED device(
     400 * 1000,
     PICO_DEFAULT_I2C_SDA_PIN,
     PICO_DEFAULT_I2C_SCL_PIN,
@@ -25,81 +25,53 @@ BusIO::Device::SSD1306_OLED oled_device(
     (OLED_ADDR & OLED_WRITE_MODE),
     0x80);
 
-uint8_t buf[OLED_BUF_LEN];
+
+//
+// a SURFACE is where we do our actual drawing commands
+// 
+
+Rendering::Surface_1bit surface(128, 64);
+
+//
+// a RENDERER will when asked 'render' the surface to the device
+//
 
 Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer(
-    buf,
-    &oled_device);
+    surface.buffer,
+    &device);
 
 // ------------------------------------------------------------
-
-// initialize render area for entire frame (128 pixels by N(8) pages)
-struct render_area frame_area =
-    {
-        start_col : 0,
-        end_col : OLED_WIDTH - 1,
-        start_page : 0,
-        end_page : OLED_NUM_PAGES - 1
-    };
-
-struct render_area smaller_area =
-    {
-        start_col : 32,
-        end_col : 96,
-        start_page : 2,
-        end_page : 6
-    };
-
 
 int demo_flash()
 {
-    fill(buf, 0x00);
-    renderer.Render();
+    // flash whatever is already on the screen
+    // this directly accesses the device and sends it an invert code
 
-    // intro sequence: flash the screen
     for (int i = 0; i < 5; i++)
     {
-        oled_device.WriteCommand(0xA5);
+        device.SendCommand(SSD1306_SET_NORMAL_DISPLAY);
         sleep_ms(100);
 
-        oled_device.WriteCommand(0xA4);
+        device.SendCommand(SSD1306_SET_INVERSE_DISPLAY);
         sleep_ms(100);
     }
+
+    device.SendCommand(SSD1306_SET_NORMAL_DISPLAY);
 
     return 0;
 }
 
-// ------------------------------------------------------------
-
-int demo_bitmap()
-{
-    for (int n = 0; n < 128 * 64 / 8; n++)
-    {
-        // buf[n] = charmap_cellphone_white[n];
-        buf[n] = charmap_futuristic_black[n];
-    }
-
-    renderer.Render();
-    return 0;
-}
 
 
 // ------------------------------------------------------------
 
 int demo_plot()
 {
-    Rendering::Surface_1bit surface(128, 64);
-
-    Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer(
-        surface.buffer,
-        &oled_device);
-
     surface.DrawLine(63, 0, 127, 32);  // right down
     surface.DrawLine(127, 32, 63, 63); // left down
-
     surface.DrawLine(63, 63, 0, 32); // left up
     surface.DrawLine(0, 32, 63, 0);  // right up
-
+ 
     for (int n = 0; n < 3; n++)
     {
         surface.DrawRect(0 + n * 8, 0 + n * 8, 127 - n * 8, 63 - +n * 8);
@@ -113,7 +85,6 @@ int demo_plot()
     }
 
     renderer.Render();
-    sleep_ms(200);
 
     return 0;
 }
@@ -122,18 +93,18 @@ int demo_plot()
 
 int demo_animate()
 {
-    for (int n = 60; n > 0; n--)
+    for (int n = 20; n > 0; n--)
     {
         for (int n = 0; n < 128 * 64 / 8; n++)
         {
-            buf[n] = testpattern_128x64x1[n];
+            surface.buffer[n] = testpattern_128x64x1[n];
         }
 
         renderer.Render();
 
         for (int n = 0; n < 128 * 64 / 8; n++)
         {
-            buf[n] = testimage_128x64x1[n];
+            surface.buffer[n] = testimage_128x64x1[n];
         }
 
         renderer.Render();
@@ -144,6 +115,18 @@ int demo_animate()
 
 // ------------------------------------------------------------
 
+int demo_font()
+{
+    for (int n = 0; n < 128 * 64 / 8; n++)
+    {
+        surface.buffer[n] = charmap_futuristic_black[n];
+    }
+
+    renderer.Render();
+    return 0;
+}
+
+// ------------------------------------------------------------
 
 // 'man', 16x16px
 const unsigned char man_sprite [32] = {
@@ -153,25 +136,24 @@ const unsigned char man_sprite [32] = {
 
 int demo_sprite()
 {
-    Rendering::Surface_1bit surface(128, 64);
+    // Rendering::Surface_1bit surface(128, 64);
     Rendering::Surface_1bit sprite(16, 16);
 
     memcpy(sprite.buffer, man_sprite, 32);
 
     for (int n=0;n<4;n++)
     {
-        surface.DrawBitmap(&sprite, &surface, (n*16+n)+0, 0);
-        surface.DrawBitmap(&sprite, &surface, (n*16+n)+16, 16);
-        surface.DrawBitmap(&sprite, &surface, (n*16+n)+32, 32);
-        surface.DrawBitmap(&sprite, &surface, (n*16+n)+48, 48);
+        surface.DrawBitmap(&sprite, &surface, (n*16)+32, 0);
+        surface.DrawBitmap(&sprite, &surface, (n*16)+32, 16);
+        surface.DrawBitmap(&sprite, &surface, (n*16)+32, 32);
+        surface.DrawBitmap(&sprite, &surface, (n*16)+32, 48);
     }
 
     Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer(
         surface.buffer,
-        &oled_device);
+        &device);
 
     renderer.Render();
-    sleep_ms(200);
 
     return 0;
 }
@@ -195,19 +177,30 @@ int main()
     // simple demo junk
     //
 
-    // calc_render_area_buflen(&frame_area);
-    // calc_render_area_buflen(&smaller_area);
+    surface.Fill(0x00);
 
-    // demo_flash();
+    demo_animate();
+    sleep_ms(1000);
 
+    surface.Fill(0x00);
+ 
     demo_plot();
+    sleep_ms(1000);
 
-    // demo_animate();
+    surface.Fill(0x00);
 
-    // demo_bitmap();
+    demo_font();
+    sleep_ms(1000);
+
+    surface.Fill(0x00);
 
     demo_sprite();
+    sleep_ms(1000);
 
+    surface.Fill(0x00);
+
+    demo_flash();
+    sleep_ms(1000);
 
     return 0;
 }

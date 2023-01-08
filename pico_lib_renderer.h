@@ -35,8 +35,8 @@ namespace Rendering {
         void Render()
         {    
             // TODO size
-            device_->WriteData( 128 * 64 / 8, surface_);
-            // device_->WriteData(surface->GetSize(), surface->GetDataPtr());
+            device_->SendData( 128 * 64 / 8, surface_);
+            // device_->SendData(surface->GetSize(), surface->GetDataPtr());
         }
 
     private:

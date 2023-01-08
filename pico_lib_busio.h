@@ -14,9 +14,6 @@
 
 // ----------------------------------------------------------------------
 
-
-// ----------------------------------------------------------------------
-
 namespace BusIO
 {
     class Interface
@@ -30,8 +27,8 @@ namespace BusIO
         {
         public:
             virtual void Initialise() = 0;
-            virtual void WriteCommand(uint8_t cmd) = 0;
-            virtual void WriteData(uint16_t len, uint8_t *data) = 0;
+            virtual void SendCommand(uint8_t cmd) = 0;
+            virtual void SendData(uint16_t len, uint8_t *data) = 0;
             virtual int8_t *ReadData(uint16_t len) = 0;
         };
 
@@ -77,56 +74,56 @@ namespace BusIO
 
                 // some configuration values are recommended by the board manufacturer
 
-                WriteCommand(SSD1306_SET_DISPLAY_OFF); // set display off
+                SendCommand(SSD1306_SET_DISPLAY_OFF); // set display off
 
                 /* memory mapping */
-                WriteCommand(SSD1306_SET_MEMORY_ADDRESSING_MODE);        // set memory address mode
-                WriteCommand(SSD1306_MEMORY_ADDRESSING_MODE_HORIZONTAL); // horizontal addressing mode
+                SendCommand(SSD1306_SET_MEMORY_ADDRESSING_MODE);        // set memory address mode
+                SendCommand(SSD1306_MEMORY_ADDRESSING_MODE_HORIZONTAL); // horizontal addressing mode
 
                 /* resolution and layout */
-                WriteCommand(SSD1306_SET_DISPLAY_START_LINE);       // set display start line to 0
-                WriteCommand(SSD1306_SET_SEGMENT_REMAP_127);        // set segment re-map column address 127 is mapped to SEG0
-                WriteCommand(SSD1306_SET_MULTIPLEX_RATIO);          // set multiplex ratio
-                WriteCommand(OLED_HEIGHT - 1);                      // display height - 1
-                WriteCommand(SSD1306_SET_COM_OUTPUT_SCAN_DIR_LEFT); // set COM (common) output scan direction
-                WriteCommand(SSD1306_SET_DISPLAY_OFFSET);           // set display offset
-                WriteCommand(0x00);                                 // no offset
+                SendCommand(SSD1306_SET_DISPLAY_START_LINE);       // set display start line to 0
+                SendCommand(SSD1306_SET_SEGMENT_REMAP_127);        // set segment re-map column address 127 is mapped to SEG0
+                SendCommand(SSD1306_SET_MULTIPLEX_RATIO);          // set multiplex ratio
+                SendCommand(OLED_HEIGHT - 1);                      // display height - 1
+                SendCommand(SSD1306_SET_COM_OUTPUT_SCAN_DIR_LEFT); // set COM (common) output scan direction
+                SendCommand(SSD1306_SET_DISPLAY_OFFSET);           // set display offset
+                SendCommand(0x00);                                 // no offset
 
-                WriteCommand(SSD1306_SET_COM_PIN_HARDWARE_CONFIG); // set COM (common) pins hardware configuration
+                SendCommand(SSD1306_SET_COM_PIN_HARDWARE_CONFIG); // set COM (common) pins hardware configuration
 
                 if (OLED_HEIGHT <= _u(32))
                 {
-                    WriteCommand(0x02); // TODO what is this?
+                    SendCommand(0x02); // TODO what is this?
                 }
                 else
                 {
-                    WriteCommand(0x12);
+                    SendCommand(0x12);
                 }
 
                 /* timing and driving scheme */
-                WriteCommand(SSD1306_SET_DISPLAY_CLOCK_DIVIDE); // set display clock divide ratio
-                WriteCommand(0x80);                             // div ratio of 1, standard freq
-                WriteCommand(SSD1306_SET_PRECHARGE_PERIOD);     // set pre-charge period
-                WriteCommand(0xF1);                             // Vcc internally generated on our board
-                WriteCommand(SSD1306_SET_VCOM_DESELECT_LEVEL);  // set VCOMH deselect level
-                WriteCommand(SSD1306_VCOM_DESELECT_083_TIMES);  // 0.83xVcc
+                SendCommand(SSD1306_SET_DISPLAY_CLOCK_DIVIDE); // set display clock divide ratio
+                SendCommand(0x80);                             // div ratio of 1, standard freq
+                SendCommand(SSD1306_SET_PRECHARGE_PERIOD);     // set pre-charge period
+                SendCommand(0xF1);                             // Vcc internally generated on our board
+                SendCommand(SSD1306_SET_VCOM_DESELECT_LEVEL);  // set VCOMH deselect level
+                SendCommand(SSD1306_VCOM_DESELECT_083_TIMES);  // 0.83xVcc
 
                 /* display */
-                WriteCommand(SSD1306_SET_CONTRAST_CONTROL);     // set contrast control
-                WriteCommand(0xFF);
-                WriteCommand(SSD1306_SET_ENTIRE_DISPLAY_RAM);   // set entire display on to follow RAM content
-                WriteCommand(SSD1306_SET_NORMAL_DISPLAY);       // set normal (not inverse, B=W & W=B) display
-                WriteCommand(SSD1306_SET_CHARGE_PUMP);          // set charge pump
-                WriteCommand(0x14);                             // Vcc internally generated on our board
+                SendCommand(SSD1306_SET_CONTRAST_CONTROL);     // set contrast control
+                SendCommand(0xFF);
+                SendCommand(SSD1306_SET_ENTIRE_DISPLAY_RAM);   // set entire display on to follow RAM content
+                SendCommand(SSD1306_SET_NORMAL_DISPLAY);       // set normal (not inverse, B=W & W=B) display
+                SendCommand(SSD1306_SET_CHARGE_PUMP);          // set charge pump
+                SendCommand(0x14);                             // Vcc internally generated on our board
 
                 /* scrolling safety */
-                WriteCommand(SSD1306_SET_CONTINUOUS_SCROLL_DEACTIVATE); // deactivate horizontal scrolling if set
+                SendCommand(SSD1306_SET_CONTINUOUS_SCROLL_DEACTIVATE); // deactivate horizontal scrolling if set
                                                                         // this is necessary as memory writes will corrupt if scrolling was enabled
 
-                WriteCommand(SSD1306_SET_DISPLAY_ON); // turn display on ( surely this should be client option)
+                SendCommand(SSD1306_SET_DISPLAY_ON); // turn display on ( surely this should be client option)
             }
 
-            void WriteCommand(uint8_t cmd)
+            void SendCommand(uint8_t cmd)
             {
                 cmd_buf_[1] = cmd;
 
@@ -137,7 +134,7 @@ namespace BusIO
                                    false);
             }
 
-            void WriteData(uint16_t len, uint8_t *data)
+            void SendData(uint16_t len, uint8_t *data)
             {
                 temp_buf_ = (uint8_t *)malloc(len + 1);
 
