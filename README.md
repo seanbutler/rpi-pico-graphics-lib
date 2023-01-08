@@ -1,5 +1,12 @@
 
-# RPI PICO ssd1306 oled lib (with examples)
+# RPI PICO Graphics Library 
+
+ - header only 
+ - lines, sprites, surfaces/masks
+ - easy to include in your project, use cmake or just copy the header files
+ - works with 1bit depth displays
+
+![](IMG_0089.jpg)
 
 ## Motivation 
 
@@ -8,7 +15,46 @@ This code handles 128x62x1 screens more nicely. Could do with some parameterisat
 
 This is hopefully a better graphics library for the common oled's with ideas stolen from from rpi-sdk and adafruit-gfx. for games gameplay and UIs. using basically the others code underneath but some higher level abstractions for my convenience.
 
-![](IMG_0089.jpg)
+
+## Design/Use/Architecture
+
+1. Create a Device
+
+
+~~~c++
+  BusIO::Device::SSD1306_OLED device(
+    400 * 1000,                     //baud rate
+    PICO_DEFAULT_I2C_SDA_PIN,       // pin
+    PICO_DEFAULT_I2C_SCL_PIN,       // pin
+    GPIO_FUNC_I2C,                  // sdk enum
+    (OLED_ADDR & OLED_WRITE_MODE),  // sdk enum
+    0x80);                          // manufacturer magic number
+~~~
+
+3. Create a Surface
+
+~~~c++
+  Rendering::Surface_1bit surface(128, 64);
+~~~
+
+4. Issue Drawing Commands to Surfaces
+
+~~~c++
+  surface.DrawLine(63, 0, 127, 32);   // right down
+  surface.DrawLine(127, 32, 63, 63);  // left down
+  surface.DrawLine(63, 63, 0, 32);    // left up
+  surface.DrawLine(0, 32, 63, 0);     // right up
+~~~
+
+
+5. Use Renderer Class to Draw Surface to Device
+
+~~~c++
+  Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer(
+    surface.buffer, 
+    &device);
+~~~
+
 
 ## External documents and datasheets... 
 
@@ -20,18 +66,17 @@ https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf
 
 ## Adafruit and Arduino
 
-Lots of excellent work here: Abstracting away the various IO methods available on the Arduino. Providing a basic but usable generic graphics library. 
+Lots of excellent work here on their Arudino libraries. These libs have grown and hold some interesting useful ideas. 
 
 Hide the various hardware IO methods behind this... 
  - [Adafruit_BusIO](https://github.com/adafruit/Adafruit_BusIO) 
 
 Nice big family of graphics methods here... 
-
  - [Adafruit-GFX-Library](https://github.com/adafruit/Adafruit-GFX-Library)
 
-These libs have grown and hold some interesting usaful ideas.  They are specifically for Arduino and contain many Arduino-isms which i need to work around. Must consider how to do that. 
+ They are specifically for Arduino and contain some Arduino-isms which i need to work around. 
 
-**Possibly I need to FORK these two libraries to make ports for RPI PICO?**
+__Possibly I should just fork the Adafruit libraries to make ports for RPI PICO? Would learn more by reading them and re-writing where necessary though.__
 
 ## instructions
 
@@ -44,7 +89,6 @@ These libs have grown and hold some interesting usaful ideas.  They are specific
 **basic refactoring**
 
 - [x] refactored example oled code provided by the rpi people
-
 
 **architectural separation, devices, interface, renderers and graphics**
 
@@ -98,4 +142,8 @@ These libs have grown and hold some interesting usaful ideas.  They are specific
 
 - [ ] raycasting engine
 - [ ] proper 3d engine
+
+- [ ] works with 1 bit depth devices
+- [ ] works with 8 bit depth devices
+- [ ] works with 16 bit depth devices
 

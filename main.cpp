@@ -4,7 +4,8 @@
 
 // ------------------------------------------------------------
 
-#include "pico_lib_SSD13XX.h"
+#include "pico_lib_SSD1306.h"
+
 #include "pico_lib_busio.h"    
 #include "pico_lib_renderer.h" 
 #include "pico_lib_graphics.h"
@@ -24,7 +25,6 @@ BusIO::Device::SSD1306_OLED device(
     GPIO_FUNC_I2C,
     (OLED_ADDR & OLED_WRITE_MODE),
     0x80);
-
 
 //
 // a SURFACE is where we do our actual drawing commands
@@ -128,8 +128,8 @@ int demo_font()
 
 // ------------------------------------------------------------
 
-// 'man', 16x16px
-const unsigned char man_sprite [32] = {
+// 'person', 16x16px
+const unsigned char person_sprite [32] = {
 	0x00, 0x00, 0x00, 0x80, 0xc0, 0xe6, 0x6f, 0xff, 0xfd, 0xef, 0x62, 0xc0, 0x00, 0x00, 0x00, 0x00, 
 	0x00, 0x00, 0x00, 0xc3, 0xe3, 0x70, 0x3f, 0x1f, 0x0f, 0xff, 0xf8, 0x83, 0x07, 0x00, 0x00, 0x00
 };
@@ -139,7 +139,7 @@ int demo_sprite()
     // Rendering::Surface_1bit surface(128, 64);
     Rendering::Surface_1bit sprite(16, 16);
 
-    memcpy(sprite.buffer, man_sprite, 32);
+    memcpy(sprite.buffer, person_sprite, 32);
 
     for (int n=0;n<4;n++)
     {
