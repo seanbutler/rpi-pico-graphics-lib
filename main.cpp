@@ -40,28 +40,56 @@ Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer(
     surface.buffer,
     &device);
 
+
+
 // ------------------------------------------------------------
+
+// Rendering::Surface_8bit surface2(128, 64);
+
+// Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer2(
+//     surface2.buffer,
+//     &device);
+
+// ------------------------------------------------------------
+
+// int demo_gradient()
+// {
+//     for (int i = 0; i < 128; i++)
+//     {
+//         surface2.SetColour(i*2);
+
+//         for (int j = 0; i < 64; j++)
+//         {
+//             surface2.SetPixel(i, j);
+//         }
+//     }
+
+//     renderer2.Render();
+
+//     return 0;
+// }
+
+// ------------------------------------------------------------
+
 
 int demo_flash()
 {
     // flash whatever is already on the screen
     // this directly accesses the device and sends it an invert code
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 50; i++)
     {
         device.SendCommand(SSD1306_SET_NORMAL_DISPLAY);
-        sleep_ms(100);
+        sleep_ms(10);
 
         device.SendCommand(SSD1306_SET_INVERSE_DISPLAY);
-        sleep_ms(100);
+        sleep_ms(10);
     }
 
     device.SendCommand(SSD1306_SET_NORMAL_DISPLAY);
 
     return 0;
 }
-
-
 
 // ------------------------------------------------------------
 
@@ -158,8 +186,6 @@ int demo_sprite()
     return 0;
 }
 
-
-
 // ------------------------------------------------------------
 
 int main()
@@ -174,33 +200,36 @@ int main()
     bi_decl(bi_program_description("OLED I2C example for the Raspberry Pi Pico"));
 
     //
-    // simple demo junk
+    // simple 1bit demo junk
     //
 
-    surface.Fill(0x00);
-
+    surface.RawFill(0x00); 
     demo_animate();
     sleep_ms(1000);
 
-    surface.Fill(0x00);
- 
+    surface.RawFill(0x00); 
     demo_plot();
     sleep_ms(1000);
 
-    surface.Fill(0x00);
-
+    surface.RawFill(0x00);
     demo_font();
     sleep_ms(1000);
 
-    surface.Fill(0x00);
-
+    surface.RawFill(0x00);
     demo_sprite();
     sleep_ms(1000);
 
-    surface.Fill(0x00);
-
+    surface.RawFill(0x00);
     demo_flash();
     sleep_ms(1000);
+
+
+    // 8 bit demo junk
+
+    // surface2.RawFill(0xFF);
+    // demo_gradient();
+    // sleep_ms(1000);
+
 
     return 0;
 }

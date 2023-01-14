@@ -32,10 +32,13 @@ namespace Rendering {
 
         }
 
+        void SetSurface(uint8_t* surface){
+            surface_ = surface;
+        }
+
         void Render()
         {    
-            // TODO size
-            device_->SendData( 128 * 64 / 8, surface_);
+            device_->SendData( 128 * 64 / 8, surface_, 0x40);
             // device_->SendData(surface->GetSize(), surface->GetDataPtr());
         }
 

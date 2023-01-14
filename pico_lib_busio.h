@@ -28,7 +28,7 @@ namespace BusIO
         public:
             virtual void Initialise() = 0;
             virtual void SendCommand(uint8_t cmd) = 0;
-            virtual void SendData(uint16_t len, uint8_t *data) = 0;
+            virtual void SendData(uint16_t len, uint8_t *data, uint8_t data_pfix) = 0;
             virtual int8_t *ReadData(uint16_t len) = 0;
         };
 
@@ -46,7 +46,7 @@ namespace BusIO
                          uint8_t scl_pin,
                          enum gpio_function gpio_func,
                          uint8_t write_flags,
-                         uint8_t cmd_pfix = 0x40)
+                         uint8_t cmd_pfix)
                 : baud_rate_(baud_rate), sda_pin_(sda_pin), scl_pin_(scl_pin), gpio_func_(gpio_func), write_flags_(write_flags), cmd_pfix_(cmd_pfix)
             {
 
@@ -125,6 +125,9 @@ namespace BusIO
 
             void SendCommand(uint8_t cmd)
             {
+                uint8_t cmd_buf_[2];
+
+                cmd_buf_[0] = cmd_pfix_;
                 cmd_buf_[1] = cmd;
 
                 i2c_write_blocking(i2c_default,
@@ -134,12 +137,17 @@ namespace BusIO
                                    false);
             }
 
-            void SendData(uint16_t len, uint8_t *data)
+            void SendData(uint16_t len, 
+                            uint8_t *data, 
+                            uint8_t data_pfix)
             {
+                // TODO we could have a fixed oversize buffer then avoid the malloc 
                 temp_buf_ = (uint8_t *)malloc(len + 1);
 
                 // Co = 0, D/C = 1 => the driver expects data to be written to RAM
-                temp_buf_[0] = 0x40; // TODO parameterise this 0x40 magic number
+                // temp_buf_[0] = 0x40;         // TODO parameterise this 0x40 magic number 
+                // temp_buf_[0] = 0b00111000;   // TODO parameterise this 0x40 magic number 
+                temp_buf_[0] = data_pfix;
 
                 for (int i = 1; i < len + 1; i++)
                 {
@@ -163,7 +171,6 @@ namespace BusIO
 
         private:
             uint8_t cmd_pfix_;
-            uint8_t cmd_buf_[2];
             uint8_t *temp_buf_;
         };
     }
