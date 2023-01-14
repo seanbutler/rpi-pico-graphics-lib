@@ -26,10 +26,10 @@ namespace BusIO
         class Generic
         {
         public:
-            virtual void Initialise() = 0;
-            virtual void SendCommand(uint8_t cmd) = 0;
-            virtual void SendData(uint16_t len, uint8_t *data, uint8_t data_pfix) = 0;
-            virtual int8_t *ReadData(uint16_t len) = 0;
+            virtual void Initialise() const = 0;
+            virtual void SendCommand(uint8_t cmd) const = 0;
+            virtual void SendData(uint16_t len, uint8_t *data, uint8_t data_pfix) const = 0;
+            virtual int8_t *ReadData(uint16_t len) const = 0;
         };
 
         class SSD1306_OLED : public Generic
@@ -62,7 +62,7 @@ namespace BusIO
                 Initialise();
             }
 
-            void Initialise()
+            void Initialise() const
             {
                 //
                 // Device Specific Initialisation Code Here
@@ -109,21 +109,21 @@ namespace BusIO
                 SendCommand(SSD1306_VCOM_DESELECT_083_TIMES);  // 0.83xVcc
 
                 /* display */
-                SendCommand(SSD1306_SET_CONTRAST_CONTROL);     // set contrast control
+                SendCommand(SSD1306_SET_CONTRAST_CONTROL); // set contrast control
                 SendCommand(0xFF);
-                SendCommand(SSD1306_SET_ENTIRE_DISPLAY_RAM);   // set entire display on to follow RAM content
-                SendCommand(SSD1306_SET_NORMAL_DISPLAY);       // set normal (not inverse, B=W & W=B) display
-                SendCommand(SSD1306_SET_CHARGE_PUMP);          // set charge pump
-                SendCommand(0x14);                             // Vcc internally generated on our board
+                SendCommand(SSD1306_SET_ENTIRE_DISPLAY_RAM); // set entire display on to follow RAM content
+                SendCommand(SSD1306_SET_NORMAL_DISPLAY);     // set normal (not inverse, B=W & W=B) display
+                SendCommand(SSD1306_SET_CHARGE_PUMP);        // set charge pump
+                SendCommand(0x14);                           // Vcc internally generated on our board
 
                 /* scrolling safety */
                 SendCommand(SSD1306_SET_CONTINUOUS_SCROLL_DEACTIVATE); // deactivate horizontal scrolling if set
-                                                                        // this is necessary as memory writes will corrupt if scrolling was enabled
+                                                                       // this is necessary as memory writes will corrupt if scrolling was enabled
 
                 SendCommand(SSD1306_SET_DISPLAY_ON); // turn display on ( surely this should be client option)
             }
 
-            void SendCommand(uint8_t cmd)
+            void SendCommand(uint8_t cmd) const
             {
                 uint8_t cmd_buf_[2];
 
@@ -137,16 +137,17 @@ namespace BusIO
                                    false);
             }
 
-            void SendData(uint16_t len, 
-                            uint8_t *data, 
-                            uint8_t data_pfix)
+            void SendData(uint16_t len,
+                          uint8_t *data,
+                          uint8_t data_pfix) const
             {
-                // TODO we could have a fixed oversize buffer then avoid the malloc 
+                // TODO we could have a fixed oversize buffer then avoid the malloc
+                uint8_t *temp_buf_;
                 temp_buf_ = (uint8_t *)malloc(len + 1);
 
                 // Co = 0, D/C = 1 => the driver expects data to be written to RAM
-                // temp_buf_[0] = 0x40;         // TODO parameterise this 0x40 magic number 
-                // temp_buf_[0] = 0b00111000;   // TODO parameterise this 0x40 magic number 
+                // temp_buf_[0] = 0x40;         // TODO parameterise this 0x40 magic number
+                // temp_buf_[0] = 0b00111000;   // TODO parameterise this 0x40 magic number
                 temp_buf_[0] = data_pfix;
 
                 for (int i = 1; i < len + 1; i++)
@@ -163,7 +164,7 @@ namespace BusIO
                 free(temp_buf_);
             }
 
-            int8_t *ReadData(uint16_t len)
+            int8_t *ReadData(uint16_t len) const
             {
                 static_assert("Write Only Device");
                 return 0;
@@ -171,7 +172,6 @@ namespace BusIO
 
         private:
             uint8_t cmd_pfix_;
-            uint8_t *temp_buf_;
         };
     }
 }

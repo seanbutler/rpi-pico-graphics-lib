@@ -37,10 +37,8 @@ Rendering::Surface_1bit surface(128, 64);
 //
 
 Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer(
-    surface.buffer,
-    &device);
-
-
+    surface,
+    device);
 
 // ------------------------------------------------------------
 
@@ -95,10 +93,10 @@ int demo_flash()
 
 int demo_plot()
 {
-    surface.DrawLine(63, 0, 127, 32);  // right down
-    surface.DrawLine(127, 32, 63, 63); // left down
-    surface.DrawLine(63, 63, 0, 32); // left up
-    surface.DrawLine(0, 32, 63, 0);  // right up
+    surface.DrawLine(63, 0, 127, 32);   // right down
+    surface.DrawLine(127, 32, 63, 63);  // left down
+    surface.DrawLine(63, 63, 0, 32);    // left up
+    surface.DrawLine(0, 32, 63, 0);     // right up
  
     for (int n = 0; n < 3; n++)
     {
@@ -164,7 +162,6 @@ const unsigned char person_sprite [32] = {
 
 int demo_sprite()
 {
-    // Rendering::Surface_1bit surface(128, 64);
     Rendering::Surface_1bit sprite(16, 16);
 
     memcpy(sprite.buffer, person_sprite, 32);
@@ -176,10 +173,6 @@ int demo_sprite()
         surface.DrawBitmap(&sprite, &surface, (n*16)+32, 32);
         surface.DrawBitmap(&sprite, &surface, (n*16)+32, 48);
     }
-
-    Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer(
-        surface.buffer,
-        &device);
 
     renderer.Render();
 

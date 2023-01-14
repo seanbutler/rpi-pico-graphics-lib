@@ -12,39 +12,47 @@
 #include "pico/binary_info.h"
 #include "hardware/i2c.h"
 
+
+#include "pico_lib_graphics.h"
+
 // ----------------------------------------------------------------------
 
 namespace Rendering {
 
     class AbstractRenderer {
-        virtual void Render() = 0;
-    };
-
-    class GraphicsSurface_GenericBusDevice_Renderer : public AbstractRenderer
-    {
-
-    public:
-        GraphicsSurface_GenericBusDevice_Renderer(uint8_t* surface,
-                BusIO::Device::Generic *device)
+        public:
+        AbstractRenderer(const Surface & surface, const BusIO::Device::Generic & device)
                 : surface_(surface)
                 , device_(device)
         {
 
         }
 
-        void SetSurface(uint8_t* surface){
-            surface_ = surface;
+        virtual void Render() const = 0;
+
+        protected:
+            const Surface & surface_;
+            const BusIO::Device::Generic & device_;
+
+    };
+
+
+    class GraphicsSurface_GenericBusDevice_Renderer : public AbstractRenderer
+    {
+
+    public:
+        GraphicsSurface_GenericBusDevice_Renderer(const Surface & surface, const BusIO::Device::Generic & device)
+            : AbstractRenderer(surface, device)
+        {
+
         }
 
-        void Render()
+
+        void Render() const
         {    
-            device_->SendData( 128 * 64 / 8, surface_, 0x40);
-            // device_->SendData(surface->GetSize(), surface->GetDataPtr());
+            device_.SendData(surface_.GetSize(), surface_.GetBuffer(), 0x40);
         }
 
-    private:
-        uint8_t *                   surface_;
-        BusIO::Device::Generic *    device_;
     };
 
 }

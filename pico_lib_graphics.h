@@ -50,6 +50,16 @@ namespace Rendering
             }
         }
 
+        uint16_t GetSize() const 
+        { 
+            return size_;
+        }
+
+        uint8_t* GetBuffer() const 
+        { 
+            return buffer;
+        }
+
         virtual void SetPixel(uint8_t x, uint8_t y) = 0;
         virtual void ClearPixel(uint8_t x, uint8_t y) = 0;
         virtual bool GetPixel(uint8_t x, uint8_t y) = 0;
