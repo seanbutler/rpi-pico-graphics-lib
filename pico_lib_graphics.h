@@ -8,6 +8,10 @@
 
 #pragma once
 
+#include <initializer_list>
+#include <array>
+#include <utility>
+
 #include "pico/stdlib.h"
 #include "pico/binary_info.h"
 #include "hardware/i2c.h"
@@ -64,24 +68,67 @@ namespace Rendering
         virtual void ClearPixel(uint8_t x, uint8_t y) = 0;
         virtual bool GetPixel(uint8_t x, uint8_t y) = 0;
 
-        void DrawRect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
+
+        uint8_t x_, y_;
+        inline void To( uint8_t x, uint8_t y) { x_ = x; y_ = y; }
+        
+        void LineTo( uint8_t x, uint8_t y) {
+            Line(x_, y_, x, y);
+            To(x, y);
+        }
+
+        void LineRect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
         {
             // TODO put in code here to handle special fast cases
 
-            DrawLine(x0, y0, x1, y0);
-            DrawLine(x1, y0, x1, y1);
-            DrawLine(x1, y1, x0, y1);
-            DrawLine(x0, y1, x0, y0);
+            Line(x0, y0, x1, y0);
+            Line(x1, y0, x1, y1);
+            Line(x1, y1, x0, y1);
+            Line(x0, y1, x0, y0);
         }
 
-        void DrawTriangle(uint8_t x0, uint8_t y0,
+        void FillRect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
+        {
+            // TODO put in code here to handle special fast cases
+
+            Line(x0, y0, x1, y0);
+            Line(x1, y0, x1, y1);
+            Line(x1, y1, x0, y1);
+            Line(x0, y1, x0, y0);
+        }
+
+
+
+        void LineTriangle(uint8_t x0, uint8_t y0,
                           uint8_t x1, uint8_t y1,
                           uint8_t x2, uint8_t y2)
         {
-            DrawLine(x0, y0, x1, y1);
-            DrawLine(x1, y1, x2, y2);
-            DrawLine(x2, y2, x0, y0);
+            To(x0, y0);
+            LineTo(x1, y1);
+            LineTo(x2, y2);
+            LineTo(x0, y0);
         }
+
+
+
+        void LineSequence( uint8_t* buffer, uint8_t size)
+        {
+
+            To(buffer[0], buffer[1]);
+
+            for(uint16_t n=2;n<size; n+=2) {
+                LineTo(buffer[n], buffer[n+1]);
+            }
+
+            LineTo(buffer[0], buffer[1]);
+        }
+
+        inline void LinePolygon( uint8_t* buffer, uint8_t size)
+        {
+            LineSequence(buffer, size);
+            LineTo(buffer[0], buffer[1]);
+        }
+
 
         void DrawBitmap(Surface *src,
                         Surface *dest,
@@ -103,9 +150,12 @@ namespace Rendering
             }
         }
 
+
+
+
         // Bresenhams from here https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 
-        void DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
+        void Line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
         {
             // TODO put in code here to handle special fast cases
 

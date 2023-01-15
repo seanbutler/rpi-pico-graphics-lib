@@ -59,8 +59,8 @@ This is hopefully a better graphics library for the common oled's with ideas sto
 
 ~~~c++
   Rendering::GraphicsSurface_GenericBusDevice_Renderer renderer(
-    surface.buffer, 
-    &device);
+      surface,
+      device);
 ~~~
 
 
@@ -156,7 +156,7 @@ __Possibly I should just fork the Adafruit libraries to make ports for RPI PICO?
 - [ ] raycasting engine
 - [ ] proper 3d engine
 
-- [ ] works with 1 bit depth devices
+- [x] works with 1 bit depth devices
 - [ ] works with 8 bit depth devices
 - [ ] works with 16 bit depth devices
 

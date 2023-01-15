@@ -93,19 +93,21 @@ int demo_flash()
 
 int demo_plot()
 {
-    surface.DrawLine(63, 0, 127, 32);   // right down
-    surface.DrawLine(127, 32, 63, 63);  // left down
-    surface.DrawLine(63, 63, 0, 32);    // left up
-    surface.DrawLine(0, 32, 63, 0);     // right up
- 
+    uint8_t verts[8] = { 63, 0, 
+                        127, 32, 
+                        63, 63, 
+                        0, 32 };
+
+    surface.LinePolygon(verts, 8);
+
     for (int n = 0; n < 3; n++)
     {
-        surface.DrawRect(0 + n * 8, 0 + n * 8, 127 - n * 8, 63 - +n * 8);
+        surface.LineRect(0 + n * 8, 0 + n * 8, 127 - n * 8, 63 - +n * 8);
     }
 
     for (int n = 32; n <= 96; n += 32)
     {
-        surface.DrawTriangle(n, 24,
+        surface.LineTriangle(n, 24,
                              n + 8, 40,
                              n - 8, 40);
     }
@@ -196,21 +198,21 @@ int main()
     // simple 1bit demo junk
     //
 
-    surface.RawFill(0x00); 
-    demo_animate();
-    sleep_ms(1000);
+    // surface.RawFill(0x00); 
+    // demo_animate();
+    // sleep_ms(1000);
 
     surface.RawFill(0x00); 
     demo_plot();
     sleep_ms(1000);
 
-    surface.RawFill(0x00);
-    demo_font();
-    sleep_ms(1000);
+    // surface.RawFill(0x00);
+    // demo_font();
+    // sleep_ms(1000);
 
-    surface.RawFill(0x00);
-    demo_sprite();
-    sleep_ms(1000);
+    // surface.RawFill(0x00);
+    // demo_sprite();
+    // sleep_ms(1000);
 
     surface.RawFill(0x00);
     demo_flash();

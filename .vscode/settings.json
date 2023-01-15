@@ -17,6 +17,7 @@
         "vector": "cpp",
         "cmath": "cpp",
         "atomic": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "initializer_list": "cpp"
     }
 }
